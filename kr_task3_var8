@@ -1,0 +1,115 @@
+import java.util.Random;
+import java.util.Scanner;
+
+public class Main {
+
+    private static final int CODE_LENGTH = 4;
+    private static final int MAX_ATTEMPTS = 20;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        int[] secretCode = generateCode();
+
+        System.out.println("Программа загадала код из 4 чисел от 0 до 9.");
+        System.out.println("Введите 4 числа через пробел, например: 1 2 3 4");
+        System.out.println("Нужно угадать код быстрее чем за 20 попыток.");
+
+        for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+            System.out.println();
+            System.out.println("Попытка " + attempt + " из " + MAX_ATTEMPTS);
+
+            int[] userCode = readCode(scanner);
+
+            int matches = countMatches(secretCode, userCode);
+
+            if (matches == CODE_LENGTH) {
+                System.out.println("Код угадан!");
+                System.out.println("Количество попыток: " + attempt);
+                return;
+            } else {
+                System.out.println("Количество совпадений: " + matches);
+            }
+        }
+
+        System.out.println();
+        System.out.println("Попытки закончились.");
+        System.out.print("Загаданный код был: ");
+        printCode(secretCode);
+    }
+
+    public static int[] generateCode() {
+        Random random = new Random();
+        int[] code = new int[CODE_LENGTH];
+
+        for (int i = 0; i < CODE_LENGTH; i++) {
+            code[i] = random.nextInt(10);
+        }
+
+        return code;
+    }
+
+    public static int[] readCode(Scanner scanner) {
+        int[] code = new int[CODE_LENGTH];
+
+        while (true) {
+            System.out.print("Ваш вариант: ");
+            String input = scanner.nextLine().trim();
+
+            String[] parts = input.split("\\s+");
+
+            if (parts.length != CODE_LENGTH) {
+                System.out.println("Ошибка: нужно ввести ровно 4 числа.");
+                continue;
+            }
+
+            boolean isCorrect = true;
+
+            for (int i = 0; i < CODE_LENGTH; i++) {
+                try {
+                    int number = Integer.parseInt(parts[i]);
+
+                    if (number < 0 || number > 9) {
+                        isCorrect = false;
+                        break;
+                    }
+
+                    code[i] = number;
+                } catch (NumberFormatException e) {
+                    isCorrect = false;
+                    break;
+                }
+            }
+
+            if (isCorrect) {
+                return code;
+            }
+
+            System.out.println("Ошибка: вводить можно только числа от 0 до 9.");
+        }
+    }
+
+    public static int countMatches(int[] secretCode, int[] userCode) {
+        int matches = 0;
+
+        for (int i = 0; i < CODE_LENGTH; i++) {
+            if (secretCode[i] == userCode[i]) {
+                matches++;
+            }
+        }
+
+        return matches;
+    }
+
+    public static void printCode(int[] code) {
+        for (int i = 0; i < code.length; i++) {
+            System.out.print(code[i]);
+
+            if (i < code.length - 1) {
+                System.out.print(" ");
+            }
+        }
+
+        System.out.println();
+    }
+}
