@@ -1,0 +1,46 @@
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Введите три длины отрезков:");
+        double a = scanner.nextDouble();
+        double b = scanner.nextDouble();
+        double c = scanner.nextDouble();
+
+        if (!canMakeTriangle(a, b, c)) {
+            System.out.println("Из данных отрезков нельзя составить треугольник.");
+            return;
+        }
+
+        double angleA = getAngle(a, b, c);
+        double angleB = getAngle(b, a, c);
+        double angleC = getAngle(c, a, b);
+
+        double externalA = 180 - angleA;
+        double externalB = 180 - angleB;
+        double externalC = 180 - angleC;
+
+        double maxExternalAngle = Math.max(externalA, Math.max(externalB, externalC));
+
+        System.out.println("Из данных отрезков можно составить треугольник.");
+        System.out.printf("Наибольший внешний угол: %.4f градусов%n", maxExternalAngle);
+    }
+
+    public static boolean canMakeTriangle(double a, double b, double c) {
+        return a > 0 && b > 0 && c > 0
+                && a + b > c
+                && a + c > b
+                && b + c > a;
+    }
+
+    public static double getAngle(double oppositeSide, double side1, double side2) {
+        double cosValue = (side1 * side1 + side2 * side2 - oppositeSide * oppositeSide)
+                / (2 * side1 * side2);
+
+        double angleRadians = Math.acos(cosValue);
+        return Math.toDegrees(angleRadians);
+    }
+}
